@@ -4,35 +4,52 @@
 <TITLE>Charts App</TITLE>
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type="text/javascript">
 // Load the Visualization API and the piechart package.
     google.load('visualization', '1', {'packages':['corechart']});
       
     // Set a callback to run when the Google Visualization API is loaded.
     google.setOnLoadCallback(drawChart);
-      
+    
+
     function drawChart() {
+      
       var jsonData = $.ajax({
-          url: "https://ona.io/api/v1/data/15885?format=json",
-          dataType:"json",
-          async: false
-          }).responseText;
-          
+          url: "http://192.168.3.5/api/v1/data/3?format=jsonp",
+          contentType: "application/json",
+          dataType:"jsonp",
+          async: false,
+          success: function(data){
+              jsonData = data;
+              console.log(jsonData);
+              for (var i=0, len=jsonData.length; i<len; i++) {
+                   if (typeof jsonData[i] != "object") continue;
+                   if (jsonData[i]._id === name) return jsonData[i].value;
+                   console.log(jsonData[i].How_old_are_you);
+                   console.log(jsonData[i].What_is_your_name);
+              }   
+
+              var data = new google.visualization.DataTable(jsonData);
+              //jdata = $.parseJSON(jsonData)
+      
+              // Instantiate and draw our chart, passing in some options.
+              var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+              chart.draw(data, {width: 400, height: 240});
+              }
+
+          });  
       // Create our data table out of JSON data loaded from server.
-      var data = new google.visualization.DataTable(jsonData);
-      jdata = JSON.parse(jsonData)
-      alert(jdata);
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-      chart.draw(data, {width: 400, height: 240});
+      
+      
     }
 
     </script>
 </HEAD>
 
 <BODY>
-<div id="chart_div">CHART APP</div>
+<b>CHART APP</b>
+<div id="chart_div"></div>
 
 </BODY>
 
